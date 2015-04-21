@@ -44,7 +44,7 @@
     self.imageView.frame = imageRect;
     
     float labelHeight = height - (imageRect.origin.y + imageRect.size.height);
-    CGRect labelRect = CGRectMake(width * 0.05, imageRect.origin.y + imageRect.size.height, width * 0.9, labelHeight);
+    CGRect labelRect = CGRectMake(width * 0.05, imageRect.origin.y + imageRect.size.height + 10, width * 0.9, labelHeight);
     self.titleLabel.frame = labelRect;
 }
 
@@ -54,7 +54,7 @@
 @interface SGGridMenu ()
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIScrollView *contentScrollView;
-@property (nonatomic, strong) SGButton *cancelButton;
+@property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) NSArray *itemTitles;
 @property (nonatomic, strong) NSArray *itemImages;
 @property (nonatomic, strong) NSArray *items;
@@ -77,7 +77,8 @@
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.font = [UIFont boldSystemFontOfSize:17];
         _titleLabel.textAlignment = NSTextAlignmentCenter;
-        _titleLabel.textColor = BaseMenuTextColor(self.style);
+//        _titleLabel.textColor = BaseMenuTextColor(self.style);
+        _titleLabel.textColor = [UIColor blackColor];
         [self addSubview:_titleLabel];
         
         _contentScrollView = [[UIScrollView alloc]initWithFrame:CGRectZero];
@@ -87,14 +88,21 @@
         _contentScrollView.backgroundColor = [UIColor clearColor];
         [self addSubview:_contentScrollView];
         
-        _cancelButton = [SGButton buttonWithType:UIButtonTypeCustom];
+        _cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _cancelButton.clipsToBounds = YES;
         _cancelButton.titleLabel.font = [UIFont systemFontOfSize:17];
-        [_cancelButton setTitleColor:BaseMenuTextColor(self.style) forState:UIControlStateNormal];
+        [_cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [_cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
+        [_cancelButton setTintColor:[UIColor blackColor]];
         [_cancelButton addTarget:self
                           action:@selector(tapAction:)
                 forControlEvents:UIControlEventTouchUpInside];
         [_cancelButton setTitle:@"取    消" forState:UIControlStateNormal];
+        
+
+        [_cancelButton setHighlighted:NO];
+
+         _cancelButton.backgroundColor = [UIColor clearColor];
         [self addSubview:_cancelButton];
     }
     return self;
@@ -134,7 +142,7 @@
     
     self.backgroundColor = BaseMenuBackgroundColor(style);
     self.titleLabel.textColor = BaseMenuTextColor(style);
-    [self.cancelButton setTitleColor:BaseMenuActionTextColor(style) forState:UIControlStateNormal];
+//    [self.cancelButton setTitleColor:BaseMenuActionTextColor(style) forState:UIControlStateNormal];
     for (SGGridItem *item in self.items) {
         [item setTitleColor:BaseMenuTextColor(style) forState:UIControlStateNormal];
     }
@@ -143,8 +151,13 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    
-    self.titleLabel.frame = (CGRect){CGPointZero, CGSizeMake(self.bounds.size.width, 40)};
+ 
+    //title 为空的时候 没有高度
+    if (!_titleLabel.text || [_titleLabel.text isEqualToString:@""]) {
+        self.titleLabel.frame = (CGRect){CGPointZero, CGSizeMake(self.bounds.size.width, 0)};
+    }else{
+        self.titleLabel.frame = (CGRect){CGPointZero, CGSizeMake(self.bounds.size.width, 40)};
+    }
     
     [self layoutContentScrollView];
     self.contentScrollView.frame = (CGRect){CGPointMake(0, self.titleLabel.frame.size.height), self.contentScrollView.bounds.size};
