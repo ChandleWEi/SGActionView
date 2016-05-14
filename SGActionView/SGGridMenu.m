@@ -39,12 +39,19 @@
     
     float width = self.bounds.size.width;
     float height = self.bounds.size.height;
-    
     CGRect imageRect = CGRectMake(width * 0.2, width * 0.2, width * 0.6, width * 0.6);
+    //横屏ipad 判断
+    if([UIScreen mainScreen].bounds.size.height == 1024 || [UIScreen mainScreen].bounds.size.height == 768){
+        imageRect = CGRectMake(width * 0.1, width * 0.1, width * 0.2, width * 0.2);
+    }
+
     self.imageView.frame = imageRect;
     
     float labelHeight = height - (imageRect.origin.y + imageRect.size.height);
     CGRect labelRect = CGRectMake(width * 0.05, imageRect.origin.y + imageRect.size.height + 10, width * 0.9, labelHeight);
+    if([UIScreen mainScreen].bounds.size.height == 1024 || [UIScreen mainScreen].bounds.size.height == 768){
+        labelRect = CGRectMake(width * 0.1 -5 , imageRect.origin.y + imageRect.size.height + 10, width * 0.2+5, labelHeight);
+    }
     self.titleLabel.frame = labelRect;
 }
 
